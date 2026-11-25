@@ -123,6 +123,7 @@ def enregistrer_client():
     nom = request.form.get('nom', '').strip().upper()
     prenom = request.form.get('prenom', '').strip()
     adresse = request.form.get('adresse', '').strip()
+    telephone = request.form.get('telephone', '').strip() or None  # facultatif
 
     if not nom or not prenom or not adresse:
         return render_template('formulaire.html', erreur="Tous les champs sont obligatoires.")
@@ -132,7 +133,8 @@ def enregistrer_client():
     cursor = conn.cursor()
 
     # Exécution de la requête SQL pour insérer un nouveau client
-    cursor.execute('INSERT INTO clients (nom, prenom, adresse) VALUES (?, ?, ?)', (nom, prenom, adresse))
+    cursor.execute('INSERT INTO clients (nom, prenom, adresse, telephone) VALUES (?, ?, ?, ?)',
+                   (nom, prenom, adresse, telephone))
     conn.commit()
     conn.close()
     return redirect('/consultation/')  # Rediriger vers la liste des clients après l'enregistrement
@@ -162,15 +164,16 @@ def modifier_client(id):
         nom = request.form.get('nom', '').strip().upper()
         prenom = request.form.get('prenom', '').strip()
         adresse = request.form.get('adresse', '').strip()
+        telephone = request.form.get('telephone', '').strip() or None
 
         if not nom or not prenom or not adresse:
-            client = {'id': id, 'nom': nom, 'prenom': prenom, 'adresse': adresse}
+            client = {'id': id, 'nom': nom, 'prenom': prenom, 'adresse': adresse, 'telephone': telephone}
             conn.close()
             return render_template('modifier_client.html', client=client,
                                    erreur="Le nom, le prénom et l'adresse sont obligatoires.")
 
-        cursor.execute('UPDATE clients SET nom = ?, prenom = ?, adresse = ? WHERE id = ?',
-                       (nom, prenom, adresse, id))
+        cursor.execute('UPDATE clients SET nom = ?, prenom = ?, adresse = ?, telephone = ? WHERE id = ?',
+                       (nom, prenom, adresse, telephone, id))
         conn.commit()
         conn.close()
         return redirect('/consultation/')

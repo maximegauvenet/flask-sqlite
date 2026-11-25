@@ -134,19 +134,19 @@
 
 1. Quelle est la différence entre le **schéma** d'une base et ses **données** ? Où se trouve chacun ?
 
-   > _Ma réponse :_ 
+   > _Ma réponse :_ Le **schéma** est la structure de la base (les tables et les colonnes), décrite dans `schema.sql`. Les **données** sont le contenu (les clients), qui vit uniquement dans `database.db` sur le serveur.
 
 2. Pourquoi ne faut-il pas relancer `create_db.py` sur une application en production ?
 
-   > _Ma réponse :_ 
+   > _Ma réponse :_ Parce que `create_db.py` fait un `DROP TABLE` puis recrée la table : toutes les données saisies par les vrais utilisateurs seraient effacées.
 
 3. Pourquoi est-il important de garder `schema.sql` à jour, même si on a modifié la base avec `ALTER TABLE` ?
 
-   > _Ma réponse :_ 
+   > _Ma réponse :_ Pour que la structure décrite dans le code reste identique à celle de la vraie base. Sinon, si quelqu'un recrée la base plus tard avec `schema.sql`, la colonne `telephone` serait absente et l'application planterait.
 
 4. Pour ajouter **une** information, combien de fichiers avez-vous dû modifier ? Lesquels ?
 
-   > _Ma réponse :_ 
+   > _Ma réponse :_ 5 fichiers : `schema.sql`, `formulaire.html`, `flask_app.py` (les fonctions `enregistrer_client()` et `modifier_client()`), `read_data.html` et `modifier_client.html` (plus la commande `ALTER TABLE` sur le serveur).
 
 ---
 
