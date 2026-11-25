@@ -118,9 +118,12 @@ def formulaire_client():
 
 @app.route('/enregistrer_client', methods=['POST'])
 def enregistrer_client():
-    nom = request.form['nom']
-    prenom = request.form['prenom']
-    adresse = request.form['adresse']
+    nom = request.form.get('nom', '').strip().upper()
+    prenom = request.form.get('prenom', '').strip()
+    adresse = request.form.get('adresse', '').strip()
+
+    if not nom or not prenom or not adresse:
+        return render_template('formulaire.html', erreur="Tous les champs sont obligatoires.")
 
     # Connexion à la base de données
     conn = get_db()
