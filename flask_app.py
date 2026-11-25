@@ -28,6 +28,7 @@ def get_db():
     """Ouvre une connexion à la base de données SQLite."""
     conn = sqlite3.connect(DATABASE)
     conn.row_factory = sqlite3.Row  # pour écrire row['nom'] au lieu de row[2]
+    conn.execute('PRAGMA foreign_keys = ON')  # faire respecter les clés étrangères
     return conn
 
 
@@ -97,10 +98,12 @@ def Readfiche(post_id):
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM clients WHERE id = ?', (post_id,))
     data = cursor.fetchall()
+    cursor.execute('SELECT * FROM commandes WHERE client_id = ? ORDER BY date_commande DESC', (post_id,))
+    commandes = cursor.fetchall()
     conn.close()
     if not data:
         return "<h2>Client introuvable</h2>", 404
-    return render_template('read_data.html', data=data)
+    return render_template('read_data.html', data=data, commandes=commandes)
 
 
 @app.route('/consultation/')
@@ -149,9 +152,13 @@ def enregistrer_client():
 @app.route('/supprimer_client/<int:id>', methods=['POST'])
 def supprimer_client(id):
     conn = get_db()
-    conn.execute('DELETE FROM clients WHERE id = ?', (id,))
-    conn.commit()
-    conn.close()
+    try:
+        conn.execute('DELETE FROM clients WHERE id = ?', (id,))
+        conn.commit()
+    except sqlite3.IntegrityError:
+        return "<h2>Impossible de supprimer ce client : il a des commandes.</h2>", 409
+    finally:
+        conn.close()  # exécuté dans TOUS les cas, même après le return
     return redirect('/consultation/')
 
 
@@ -184,6 +191,38 @@ def modifier_client(id):
     if client is None:
         return "<h2>Client introuvable</h2>", 404
     return render_template('modifier_client.html', client=client)
+
+
+# --- Exercice 7 : relier deux tables ----------------------------
+
+@app.route('/commandes/')
+def liste_commandes():
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('''SELECT commandes.id, clients.id AS client_id, clients.nom, clients.prenom,
+                             commandes.produit, commandes.montant, commandes.date_commande
+                      FROM commandes
+                      JOIN clients ON commandes.client_id = clients.id
+                      ORDER BY commandes.date_commande DESC, commandes.id DESC''')
+    data = cursor.fetchall()
+    conn.close()
+    return render_template('commandes.html', data=data)
+
+
+@app.route('/statistiques/')
+def statistiques():
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('''SELECT clients.id, clients.nom, clients.prenom,
+                             COUNT(commandes.id) AS nb_commandes,
+                             COALESCE(SUM(commandes.montant), 0) AS total
+                      FROM clients
+                      LEFT JOIN commandes ON commandes.client_id = clients.id
+                      GROUP BY clients.id
+                      ORDER BY total DESC, clients.nom''')
+    data = cursor.fetchall()
+    conn.close()
+    return render_template('statistiques.html', data=data)
 
 
 # ---------------------------------------------------------------
