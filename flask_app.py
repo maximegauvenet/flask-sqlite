@@ -118,7 +118,7 @@ def formulaire_client():
 
 @app.route('/enregistrer_client', methods=['POST'])
 def enregistrer_client():
-    nom = request.form['nom']
+    nom = request.form['adresse']
     prenom = request.form['prenom']
 
     # Connexion à la base de données
@@ -126,7 +126,7 @@ def enregistrer_client():
     cursor = conn.cursor()
 
     # Exécution de la requête SQL pour insérer un nouveau client
-    cursor.execute('INSERT INTO clients (created, nom, prenom, adresse) VALUES (?, ?, ?, ?)', (1002938, nom, prenom, "ICI"))
+    cursor.execute('INSERT INTO clients (nom, prenom, adresse) VALUES (?, ?, ?)', (nom, prenom, adresse))
     conn.commit()
     conn.close()
     return redirect('/consultation/')  # Rediriger vers la liste des clients après l'enregistrement
