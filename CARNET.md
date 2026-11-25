@@ -103,25 +103,30 @@
 4. Pourquoi redirige-t-on vers `/consultation/` après l'enregistrement, au lieu d'afficher directement une page ? (Indice : essayez d'appuyer sur F5 après l'envoi.)
 
    > _Ma réponse :_ Pour éviter que le client soit enregistré en double si l'utilisateur appuie sur F5 pour rafraîchir la page.
+
 ---
 
 ## 🔵 Exercice 5 — Modifier et supprimer
 
 1. Que signifie CRUD ? Donnez la requête SQL correspondant à chaque lettre.
 
-   > _Ma réponse :_ 
+   > _Ma réponse :_ **C**reate, **R**ead, **U**pdate, **D**elete (créer, lire, modifier, supprimer). Les requêtes SQL correspondantes sont `INSERT`, `SELECT`, `UPDATE` et `DELETE`.
 
 2. Que se passe-t-il si l'on oublie le `WHERE` dans un `UPDATE` ou un `DELETE` ? À quoi servent `BEGIN` et `ROLLBACK` ?
 
-   > _Ma réponse :_ 
+   > _Ma réponse :_ La requête s'applique à **toutes** les lignes de la table : tous les clients seraient modifiés ou supprimés d'un coup. `BEGIN` démarre une transaction et `ROLLBACK` l'annule pour revenir à l'état d'avant, ce qui permet de tester une requête dangereuse sans rien casser.
 
 3. Pourquoi ne faut-il **jamais** supprimer des données avec une requête GET (un simple lien) ? (Indice : les moteurs de recherche et certains navigateurs « visitent » les liens à l'avance.)
 
-   > _Ma réponse :_ 
+   > _Ma réponse :_ Parce qu'un simple lien peut être « visité » sans que l'utilisateur le veuille (moteur de recherche, préchargement du navigateur) et supprimerait des données. Une requête GET doit seulement lire : pour supprimer on utilise un formulaire POST (avec une confirmation).
 
 4. Une fois un `id` supprimé, pourquoi est-il préférable qu'il ne soit jamais réattribué à un autre client ?
 
-   > _Ma réponse :_ 
+   > _Ma réponse :_ Parce que si l'`id` était réattribué, les anciennes références (commandes, liens, favoris) pointeraient vers le mauvais client. Avec `AUTOINCREMENT`, un numéro supprimé n'est jamais réutilisé.
+
+🧩 **Défi** — mes requêtes / ma solution :
+
+   > La suppression logique permet de récupérer un client supprimé par erreur (il suffit de repasser `actif` à 1). On garde aussi l'historique : les commandes du client restent cohérentes, et il n'y a plus d'erreur de clé étrangère à la suppression.
 
 ---
 

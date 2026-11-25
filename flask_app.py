@@ -80,6 +80,7 @@ def authentification():
 
     return render_template('formulaire_authentification.html', error=False)
 
+
 @app.route('/fiche_nom/<nom>')
 def fiche_nom(nom):
     conn = get_db()
@@ -88,6 +89,7 @@ def fiche_nom(nom):
     data = cursor.fetchall()
     conn.close()
     return render_template('read_data.html', data=data)
+
 
 @app.route('/fiche_client/<int:post_id>')
 def Readfiche(post_id):
@@ -135,10 +137,50 @@ def enregistrer_client():
     conn.close()
     return redirect('/consultation/')  # Rediriger vers la liste des clients après l'enregistrement
 
+
 # ---------------------------------------------------------------
 #  Ajoutez vos nouvelles routes ci-dessous 👇
 # ---------------------------------------------------------------
 
+# --- Exercice 5 : modifier et supprimer un client ---------------
+
+@app.route('/supprimer_client/<int:id>', methods=['POST'])
+def supprimer_client(id):
+    conn = get_db()
+    conn.execute('DELETE FROM clients WHERE id = ?', (id,))
+    conn.commit()
+    conn.close()
+    return redirect('/consultation/')
+
+
+@app.route('/modifier_client/<int:id>', methods=['GET', 'POST'])
+def modifier_client(id):
+    conn = get_db()
+    cursor = conn.cursor()
+
+    if request.method == 'POST':
+        nom = request.form.get('nom', '').strip().upper()
+        prenom = request.form.get('prenom', '').strip()
+        adresse = request.form.get('adresse', '').strip()
+
+        if not nom or not prenom or not adresse:
+            client = {'id': id, 'nom': nom, 'prenom': prenom, 'adresse': adresse}
+            conn.close()
+            return render_template('modifier_client.html', client=client,
+                                   erreur="Le nom, le prénom et l'adresse sont obligatoires.")
+
+        cursor.execute('UPDATE clients SET nom = ?, prenom = ?, adresse = ? WHERE id = ?',
+                       (nom, prenom, adresse, id))
+        conn.commit()
+        conn.close()
+        return redirect('/consultation/')
+
+    cursor.execute('SELECT * FROM clients WHERE id = ?', (id,))
+    client = cursor.fetchone()
+    conn.close()
+    if client is None:
+        return "<h2>Client introuvable</h2>", 404
+    return render_template('modifier_client.html', client=client)
 
 
 # ---------------------------------------------------------------
