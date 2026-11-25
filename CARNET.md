@@ -110,11 +110,11 @@
 
 1. Que signifie CRUD ? Donnez la requête SQL correspondant à chaque lettre.
 
-   > _Ma réponse :_ **C**reate, **R**ead, **U**pdate, **D**elete (créer, lire, modifier, supprimer). Les requêtes SQL correspondantes sont `INSERT`, `SELECT`, `UPDATE` et `DELETE`.
+   > _Ma réponse :_ **C**reate, **R**ead, **U**pdate, **D**elete (créer, lire, modifier, supprimer). Les requêtes SQL correspondantes sont INSERT, SELECT, UPDATE et DELETE.
 
 2. Que se passe-t-il si l'on oublie le `WHERE` dans un `UPDATE` ou un `DELETE` ? À quoi servent `BEGIN` et `ROLLBACK` ?
 
-   > _Ma réponse :_ La requête s'applique à **toutes** les lignes de la table : tous les clients seraient modifiés ou supprimés d'un coup. `BEGIN` démarre une transaction et `ROLLBACK` l'annule pour revenir à l'état d'avant, ce qui permet de tester une requête dangereuse sans rien casser.
+   > _Ma réponse :_ La requête s'applique à **toutes** les lignes de la table : tous les clients seraient modifiés ou supprimés d'un coup. BEGIN démarre une transaction et ROLLBACK l'annule pour revenir à l'état d'avant, ce qui permet de tester une requête dangereuse sans rien casser.
 
 3. Pourquoi ne faut-il **jamais** supprimer des données avec une requête GET (un simple lien) ? (Indice : les moteurs de recherche et certains navigateurs « visitent » les liens à l'avance.)
 
@@ -122,11 +122,11 @@
 
 4. Une fois un `id` supprimé, pourquoi est-il préférable qu'il ne soit jamais réattribué à un autre client ?
 
-   > _Ma réponse :_ Parce que si l'`id` était réattribué, les anciennes références (commandes, liens, favoris) pointeraient vers le mauvais client. Avec `AUTOINCREMENT`, un numéro supprimé n'est jamais réutilisé.
+   > _Ma réponse :_ Parce que si l'id était réattribué, les anciennes références (commandes, liens, favoris) pointeraient vers le mauvais client. Avec AUTOINCREMENT, un numéro supprimé n'est jamais réutilisé.
 
 🧩 **Défi** — mes requêtes / ma solution :
 
-   > La suppression logique permet de récupérer un client supprimé par erreur (il suffit de repasser `actif` à 1). On garde aussi l'historique : les commandes du client restent cohérentes, et il n'y a plus d'erreur de clé étrangère à la suppression.
+   > La suppression logique permet de récupérer un client supprimé par erreur (il suffit de repasser actif à 1). On garde aussi l'historique : les commandes du client restent cohérentes, et il n'y a plus d'erreur de clé étrangère à la suppression.
 
 ---
 
@@ -134,19 +134,19 @@
 
 1. Quelle est la différence entre le **schéma** d'une base et ses **données** ? Où se trouve chacun ?
 
-   > _Ma réponse :_ Le **schéma** est la structure de la base (les tables et les colonnes), décrite dans `schema.sql`. Les **données** sont le contenu (les clients), qui vit uniquement dans `database.db` sur le serveur.
+   > _Ma réponse :_ Le **schéma** est la structure de la base (les tables et les colonnes), décrite dans schema.sql. Les **données** sont le contenu (les clients), qui vit uniquement dans database.db sur le serveur.
 
 2. Pourquoi ne faut-il pas relancer `create_db.py` sur une application en production ?
 
-   > _Ma réponse :_ Parce que `create_db.py` fait un `DROP TABLE` puis recrée la table : toutes les données saisies par les vrais utilisateurs seraient effacées.
+   > _Ma réponse :_ Parce que create_db.py fait un DROP TABLE puis recrée la table : toutes les données saisies par les vrais utilisateurs seraient effacées.
 
 3. Pourquoi est-il important de garder `schema.sql` à jour, même si on a modifié la base avec `ALTER TABLE` ?
 
-   > _Ma réponse :_ Pour que la structure décrite dans le code reste identique à celle de la vraie base. Sinon, si quelqu'un recrée la base plus tard avec `schema.sql`, la colonne `telephone` serait absente et l'application planterait.
+   > _Ma réponse :_ Pour que la structure décrite dans le code reste identique à celle de la vraie base. Sinon, si quelqu'un recrée la base plus tard avec schema.sql, la colonne telephone serait absente et l'application planterait.
 
 4. Pour ajouter **une** information, combien de fichiers avez-vous dû modifier ? Lesquels ?
 
-   > _Ma réponse :_ 5 fichiers : `schema.sql`, `formulaire.html`, `flask_app.py` (les fonctions `enregistrer_client()` et `modifier_client()`), `read_data.html` et `modifier_client.html` (plus la commande `ALTER TABLE` sur le serveur).
+   > _Ma réponse :_ 5 fichiers : schema.sql, formulaire.html, flask_app.py (les fonctions enregistrer_client() et modifier_client()), read_data.html et modifier_client.html (plus la commande ALTER TABLE sur le serveur).
 
 ---
 
@@ -154,7 +154,7 @@
 
 1. Qu'est-ce qu'une **clé étrangère** ? Dans quelle table se trouve-t-elle ici, et pourquoi pas dans l'autre ?
 
-   > _Ma réponse :_ C'est une colonne qui contient l'`id` d'une ligne d'une autre table pour les relier. Ici, c'est `client_id` dans la table `commandes`, qui pointe vers `clients(id)`. Elle est dans `commandes` car un client peut avoir plusieurs commandes alors qu'une commande n'appartient qu'à un seul client.
+   > _Ma réponse :_ C'est une colonne qui contient l'id d'une ligne d'une autre table pour les relier. Ici, c'est client_id dans la table commandes, qui pointe vers clients(id). Elle est dans commandes car un client peut avoir plusieurs commandes alors qu'une commande n'appartient qu'à un seul client.
 
 2. Pourquoi est-ce une mauvaise idée de créer des colonnes `commande1`, `commande2`… dans la table `clients` ?
 
@@ -162,11 +162,11 @@
 
 3. À quoi sert un `JOIN` ? Et un `GROUP BY` ?
 
-   > _Ma réponse :_ Un `JOIN` assemble les lignes de deux tables grâce à un champ commun (par exemple afficher le nom du client à côté de sa commande). Un `GROUP BY` regroupe les lignes qui ont la même valeur pour pouvoir calculer par groupe, comme `COUNT` ou `SUM` (nombre de commandes et total par client).
+   > _Ma réponse :_ Un JOIN assemble les lignes de deux tables grâce à un champ commun (par exemple afficher le nom du client à côté de sa commande). Un GROUP BY regroupe les lignes qui ont la même valeur pour pouvoir calculer par groupe, comme COUNT ou SUM (nombre de commandes et total par client).
 
 4. Pour la bibliothèque, quelles tables imaginez-vous ? Lesquelles contiendront des clés étrangères ?
 
-   > _Ma réponse :_ Trois tables : `livres`, `utilisateurs` et `emprunts`. C'est la table `emprunts` qui contiendra les clés étrangères : `livre_id` et `utilisateur_id`.
+   > _Ma réponse :_ Trois tables : livres, utilisateurs et emprunts. C'est la table emprunts qui contiendra les clés étrangères : livre_id et utilisateur_id.
 
 ---
 
@@ -174,11 +174,11 @@
 
 1. Quelle est la différence entre **authentification** et **autorisation** ?
 
-   > _Ma réponse :_ L'**authentification** consiste à prouver qui on est (identifiant et mot de passe). L'**autorisation** consiste à vérifier ce qu'on a le droit de faire selon son rôle (un `user` peut consulter, un `admin` peut aussi modifier et supprimer).
+   > _Ma réponse :_ L'**authentification** consiste à prouver qui on est (identifiant et mot de passe). L'**autorisation** consiste à vérifier ce qu'on a le droit de faire selon son rôle (un user peut consulter, un admin peut aussi modifier et supprimer).
 
 2. Où est stockée la session ? Comment le serveur sait-il qui vous êtes à chaque nouvelle requête ?
 
-   > _Ma réponse :_ La session est stockée dans un cookie `session` dans le navigateur, signé avec `app.secret_key`. À chaque requête, le navigateur renvoie ce cookie et Flask y retrouve l'utilisateur et son rôle.
+   > _Ma réponse :_ La session est stockée dans un cookie session dans le navigateur, signé avec app.secret_key. À chaque requête, le navigateur renvoie ce cookie et Flask y retrouve l'utilisateur et son rôle.
 
 3. Pourquoi masquer un bouton dans le HTML ne suffit-il pas à protéger une action ?
 
@@ -186,11 +186,11 @@
 
 4. Que signifient les codes `302` et `403` ? Dans quel cas votre application renvoie-t-elle chacun d'eux ?
 
-   > _Ma réponse :_ `302` est une redirection : mon application l'utilise pour renvoyer vers `/authentification` un visiteur non connecté qui ouvre une page de lecture. `403` veut dire « interdit » : je le renvoie quand le rôle `admin` est exigé et que la personne ne l'est pas (`/enregistrer_client`, `/modifier_client`, `/supprimer_client`).
+   > _Ma réponse :_ 302 est une redirection : mon application l'utilise pour renvoyer vers /authentification un visiteur non connecté qui ouvre une page de lecture. 403 veut dire « interdit » : je le renvoie quand le rôle admin est exigé et que la personne ne l'est pas (/enregistrer_client, /modifier_client, /supprimer_client).
 
 5. Le mot de passe `password` est écrit en clair dans `flask_app.py`, sur un dépôt **public**. Quel est le risque ? Quelle solution avez-vous déjà rencontrée dans cet atelier pour cacher une information sensible ?
 
-   > _Ma réponse :_ N'importe qui peut lire le mot de passe sur GitHub, se connecter en `admin` puis modifier ou supprimer les données. La solution déjà vue dans l'atelier, ce sont les **secrets** GitHub (séquence 3) : on y range les informations sensibles au lieu de les écrire dans le code. Ici, on pourrait faire pareil avec des variables d'environnement, et hacher les mots de passe.
+   > _Ma réponse :_ N'importe qui peut lire le mot de passe sur GitHub, se connecter en admin puis modifier ou supprimer les données. La solution déjà vue dans l'atelier, ce sont les **secrets** GitHub (séquence 3) : on y range les informations sensibles au lieu de les écrire dans le code. Ici, on pourrait faire pareil avec des variables d'environnement, et hacher les mots de passe.
 
 ---
 
@@ -202,11 +202,11 @@
 
 2. Que signifient les codes `200`, `201`, `400`, `401` et `404` renvoyés par votre API ?
 
-   > _Ma réponse :_ `200` : tout s'est bien passé. `201` : la ressource a été créée (nouveau client). `400` : requête incorrecte (un champ obligatoire manque). `401` : authentification requise (il faut être admin connecté). `404` : le client n'existe pas.
+   > _Ma réponse :_ 200 : tout s'est bien passé. 201 : la ressource a été créée (nouveau client). 400 : requête incorrecte (un champ obligatoire manque). 401 : authentification requise (il faut être admin connecté). 404 : le client n'existe pas.
 
 3. Pourquoi une API renvoie-t-elle une erreur JSON plutôt qu'une redirection vers la page de connexion ?
 
-   > _Ma réponse :_ Parce que l'API est appelée par un programme et pas par une personne : une redirection renverrait une page HTML de connexion que le programme ne sait pas lire. Une erreur JSON avec un code `401` est directement exploitable.
+   > _Ma réponse :_ Parce que l'API est appelée par un programme et pas par une personne : une redirection renverrait une page HTML de connexion que le programme ne sait pas lire. Une erreur JSON avec un code 401 est directement exploitable.
 
 4. Citez une application de votre téléphone qui, selon vous, utilise une API. Quelles données échange-t-elle ?
 
@@ -238,4 +238,4 @@
 
 En quelques phrases, expliquez à un ami ce qui se passe entre le moment où il clique sur « Enregistrer » dans un formulaire et celui où l'information s'affiche dans une liste :
 
-> _Ma réponse :_ Quand il clique sur « Enregistrer », le navigateur envoie les champs du formulaire à Flask (requête POST). Flask vérifie que les champs sont remplis et que la personne a le droit d'enregistrer, puis exécute un `INSERT` avec des `?` dans SQLite et fait un `commit()` pour sauvegarder dans `database.db`. Il redirige ensuite vers `/consultation/` : Flask fait un `SELECT`, met les résultats dans le template HTML et renvoie la page, où le nouveau client apparaît dans la liste.
+> _Ma réponse :_ Quand il clique sur « Enregistrer », le navigateur envoie les champs du formulaire à Flask (requête POST). Flask vérifie que les champs sont remplis et que la personne a le droit d'enregistrer, puis exécute un INSERT avec des ? dans SQLite et fait un commit() pour sauvegarder dans database.db. Il redirige ensuite vers /consultation/ : Flask fait un SELECT, met les résultats dans le template HTML et renvoie la page, où le nouveau client apparaît dans la liste.
