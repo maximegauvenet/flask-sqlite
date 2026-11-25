@@ -75,6 +75,7 @@ def Readfiche(post_id):
     conn.close()
         if not data:
         return "<h2>Client introuvable</h2>", 404
+    return render_template('read_data.html', data=data)
 
 
 @app.route('/consultation/')
