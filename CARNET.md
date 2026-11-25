@@ -21,15 +21,15 @@
 
 2. À quoi sert la clé primaire `id` ? Pourquoi ne pas simplement identifier un client par son nom ?
 
-   > _Ma réponse :_ L'`id` donne un numéro unique à chaque client. On n'utilise pas le nom car deux clients peuvent avoir le même nom de famille.
+   > _Ma réponse :_ L'id donne un numéro unique à chaque client. On n'utilise pas le nom car deux clients peuvent avoir le même nom de famille.
 
 3. Pourquoi votre client ajouté en console est-il apparu sur le site ?
 
-   > _Ma réponse :_ Parce que la console et le site utilisent exactement le même fichier `database.db`.
+   > _Ma réponse :_ Parce que la console et le site utilisent exactement le même fichier database.db.
 
 4. Que signifie `NOT NULL` dans `schema.sql` ? Quelle erreur avez-vous obtenue avec `INSERT INTO clients (nom) VALUES ('TEST');` ?
 
-   > _Ma réponse :_ `NOT NULL` veut dire que le champ est obligatoire. La requête a renvoyé `NOT NULL constraint failed` car le prénom et l'adresse manquaient.
+   > _Ma réponse :_ NOT NULL veut dire que le champ est obligatoire. La requête a renvoyé NOT NULL constraint failed car le prénom et l'adresse manquaient.
 
 🧩 **Défi** — mes requêtes / ma solution :
 
@@ -52,7 +52,7 @@
 
 3. Quel est l'avantage d'écrire `row['nom']` plutôt que `row[2]` ? (Pensez à ce qui arriverait si on ajoutait une colonne au milieu de la table.)
 
-   > _Ma réponse :_ C'est plus lisible et si on ajoute une colonne dans la table, `row[2]` pointera sur la mauvaise donnée alors que `row['nom']` marchera toujours.
+   > _Ma réponse :_ C'est plus lisible et si on ajoute une colonne dans la table, row[2] pointera sur la mauvaise donnée alors que row['nom'] marchera toujours.
 
 4. Pourquoi est-il préférable de trier avec `ORDER BY` dans la requête SQL plutôt qu'en Python ?
 
@@ -64,15 +64,15 @@
 
 1. Quelle est la différence entre `WHERE nom = 'DUPONT'` et `WHERE nom LIKE '%DUP%'` ?
 
-   > _Ma réponse :_ `=` cherche le mot exact (`DUPONT`), alors que `LIKE '%DUP%'` cherche tous les noms qui contiennent `DUP` (comme `DUPONT` ou `DUPUIS`).
+   > _Ma réponse :_ = cherche le mot exact (DUPONT), alors que LIKE '%DUP%' cherche tous les noms qui contiennent DUP (comme DUPONT ou DUPUIS).
 
 2. Expliquez avec vos mots ce qu'est une **injection SQL**. Qu'est-ce qu'un pirate pourrait faire de pire qu'afficher tous les clients ?
 
-   > _Ma réponse :_ C'est le fait de taper du code SQL dans un formulaire pour pirater la requête. Au pire, il peut modifier ou supprimer toute la base de données (`DROP TABLE` ou `DELETE`).
+   > _Ma réponse :_ C'est le fait de taper du code SQL dans un formulaire pour pirater la requête. Au pire, il peut modifier ou supprimer toute la base de données (DROP TABLE ou DELETE).
 
 3. Pourquoi la version avec `?` est-elle protégée contre l'injection ?
 
-   > _Ma réponse :_ Le `?` traite ce que tape l'utilisateur comme du simple texte et jamais comme une commande SQL.
+   > _Ma réponse :_ Le ? traite ce que tape l'utilisateur comme du simple texte et jamais comme une commande SQL.
 
 4. Pour la recherche, on a utilisé `method="get"`. Quel avantage pour l'utilisateur ? (Indice : favoris, partage de lien.)
 
@@ -90,7 +90,7 @@
 
 1. Quelles étaient les deux anomalies du formulaire d'origine, et d'où venaient-elles ?
 
-   > _Ma réponse :_ Dans `flask_app.py`, `nom` récupérait le champ `adresse` et la variable `adresse` n'existait pas, ce qui causait une erreur 500 (`NameError`).
+   > _Ma réponse :_ Dans flask_app.py, nom récupérait le champ adresse et la variable adresse n'existait pas, ce qui causait une erreur 500 (NameError).
 
 2. Pourquoi la validation côté **navigateur** (`required`) ne suffit-elle pas ? Pourquoi la garder quand même ?
 
@@ -98,7 +98,7 @@
 
 3. À quoi sert `conn.commit()` ? Que se passe-t-il sans lui ?
 
-   > _Ma réponse :_ Il sauvegarde définitivement les changements dans `database.db`. Sans lui, le nouveau client n'est jamais enregistré.
+   > _Ma réponse :_ Il sauvegarde définitivement les changements dans database.db. Sans lui, le nouveau client n'est jamais enregistré.
 
 4. Pourquoi redirige-t-on vers `/consultation/` après l'enregistrement, au lieu d'afficher directement une page ? (Indice : essayez d'appuyer sur F5 après l'envoi.)
 
