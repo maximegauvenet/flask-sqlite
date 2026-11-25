@@ -118,8 +118,9 @@ def formulaire_client():
 
 @app.route('/enregistrer_client', methods=['POST'])
 def enregistrer_client():
-    nom = request.form['adresse']
+    nom = request.form['nom']
     prenom = request.form['prenom']
+    adresse = request.form['adresse']
 
     # Connexion à la base de données
     conn = get_db()
@@ -130,7 +131,6 @@ def enregistrer_client():
     conn.commit()
     conn.close()
     return redirect('/consultation/')  # Rediriger vers la liste des clients après l'enregistrement
-
 
 # ---------------------------------------------------------------
 #  Ajoutez vos nouvelles routes ci-dessous 👇
