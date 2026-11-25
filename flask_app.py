@@ -12,7 +12,7 @@
 import os
 import sqlite3
 
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'  # Clé secrète pour signer les sessions (à cacher par la suite)
@@ -264,6 +264,48 @@ def statistiques():
     data = cursor.fetchall()
     conn.close()
     return render_template('statistiques.html', data=data)
+
+
+# --- Exercice 9 : une API JSON ----------------------------------
+
+@app.get('/api/clients')
+def api_liste_clients():
+    conn = get_db()
+    rows = conn.execute('SELECT * FROM clients ORDER BY nom').fetchall()
+    conn.close()
+    return jsonify([dict(row) for row in rows])
+
+
+@app.get('/api/clients/<int:id>')
+def api_un_client(id):
+    conn = get_db()
+    row = conn.execute('SELECT * FROM clients WHERE id = ?', (id,)).fetchone()
+    conn.close()
+    if row is None:
+        return jsonify({'erreur': 'Client introuvable'}), 404
+    return jsonify(dict(row))
+
+
+@app.post('/api/clients')
+def api_creer_client():
+    if not a_le_role('admin'):
+        return jsonify({'erreur': 'Authentification administrateur requise'}), 401
+
+    donnees = request.get_json(silent=True) or {}
+    nom = str(donnees.get('nom', '')).strip().upper()
+    prenom = str(donnees.get('prenom', '')).strip()
+    adresse = str(donnees.get('adresse', '')).strip()
+
+    if not nom or not prenom or not adresse:
+        return jsonify({'erreur': 'Les champs nom, prenom et adresse sont obligatoires'}), 400
+
+    conn = get_db()
+    cursor = conn.execute('INSERT INTO clients (nom, prenom, adresse) VALUES (?, ?, ?)',
+                          (nom, prenom, adresse))
+    conn.commit()
+    nouvel_id = cursor.lastrowid
+    conn.close()
+    return jsonify({'id': nouvel_id, 'nom': nom, 'prenom': prenom, 'adresse': adresse}), 201
 
 
 # ---------------------------------------------------------------

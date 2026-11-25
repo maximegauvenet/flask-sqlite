@@ -198,19 +198,19 @@
 
 1. Quelle est la différence entre une page HTML et une réponse JSON ? À qui chacune est-elle destinée ?
 
-   > _Ma réponse :_ 
+   > _Ma réponse :_ Une page HTML est faite pour un humain, qui la lit dans un navigateur avec une mise en forme. Une réponse JSON contient des données brutes, destinées à une machine (application mobile, autre site, script).
 
 2. Que signifient les codes `200`, `201`, `400`, `401` et `404` renvoyés par votre API ?
 
-   > _Ma réponse :_ 
+   > _Ma réponse :_ `200` : tout s'est bien passé. `201` : la ressource a été créée (nouveau client). `400` : requête incorrecte (un champ obligatoire manque). `401` : authentification requise (il faut être admin connecté). `404` : le client n'existe pas.
 
 3. Pourquoi une API renvoie-t-elle une erreur JSON plutôt qu'une redirection vers la page de connexion ?
 
-   > _Ma réponse :_ 
+   > _Ma réponse :_ Parce que l'API est appelée par un programme et pas par une personne : une redirection renverrait une page HTML de connexion que le programme ne sait pas lire. Une erreur JSON avec un code `401` est directement exploitable.
 
 4. Citez une application de votre téléphone qui, selon vous, utilise une API. Quelles données échange-t-elle ?
 
-   > _Ma réponse :_ 
+   > _Ma réponse :_ L'application Météo : elle demande au serveur les prévisions pour ma ville et reçoit en JSON la température, les conditions et les prévisions des prochains jours.
 
 ---
 
@@ -238,4 +238,4 @@
 
 En quelques phrases, expliquez à un ami ce qui se passe entre le moment où il clique sur « Enregistrer » dans un formulaire et celui où l'information s'affiche dans une liste :
 
-> _Ma réponse :_ 
+> _Ma réponse :_ Quand il clique sur « Enregistrer », le navigateur envoie les champs du formulaire à Flask (requête POST). Flask vérifie que les champs sont remplis et que la personne a le droit d'enregistrer, puis exécute un `INSERT` avec des `?` dans SQLite et fait un `commit()` pour sauvegarder dans `database.db`. Il redirige ensuite vers `/consultation/` : Flask fait un `SELECT`, met les résultats dans le template HTML et renvoie la page, où le nouveau client apparaît dans la liste.
