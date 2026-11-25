@@ -74,7 +74,6 @@ def fiche_nom(nom):
     conn.close()
     return render_template('read_data.html', data=data)
 
-
 @app.route('/fiche_client/<int:post_id>')
 def Readfiche(post_id):
     conn = get_db()
