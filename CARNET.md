@@ -174,23 +174,23 @@
 
 1. Quelle est la différence entre **authentification** et **autorisation** ?
 
-   > _Ma réponse :_ 
+   > _Ma réponse :_ L'**authentification** consiste à prouver qui on est (identifiant et mot de passe). L'**autorisation** consiste à vérifier ce qu'on a le droit de faire selon son rôle (un `user` peut consulter, un `admin` peut aussi modifier et supprimer).
 
 2. Où est stockée la session ? Comment le serveur sait-il qui vous êtes à chaque nouvelle requête ?
 
-   > _Ma réponse :_ 
+   > _Ma réponse :_ La session est stockée dans un cookie `session` dans le navigateur, signé avec `app.secret_key`. À chaque requête, le navigateur renvoie ce cookie et Flask y retrouve l'utilisateur et son rôle.
 
 3. Pourquoi masquer un bouton dans le HTML ne suffit-il pas à protéger une action ?
 
-   > _Ma réponse :_ 
+   > _Ma réponse :_ Parce que n'importe qui peut envoyer la requête directement (avec F12 ou un outil comme curl) sans passer par le bouton. Il faut donc vérifier le rôle côté serveur, dans la route elle-même.
 
 4. Que signifient les codes `302` et `403` ? Dans quel cas votre application renvoie-t-elle chacun d'eux ?
 
-   > _Ma réponse :_ 
+   > _Ma réponse :_ `302` est une redirection : mon application l'utilise pour renvoyer vers `/authentification` un visiteur non connecté qui ouvre une page de lecture. `403` veut dire « interdit » : je le renvoie quand le rôle `admin` est exigé et que la personne ne l'est pas (`/enregistrer_client`, `/modifier_client`, `/supprimer_client`).
 
 5. Le mot de passe `password` est écrit en clair dans `flask_app.py`, sur un dépôt **public**. Quel est le risque ? Quelle solution avez-vous déjà rencontrée dans cet atelier pour cacher une information sensible ?
 
-   > _Ma réponse :_ 
+   > _Ma réponse :_ N'importe qui peut lire le mot de passe sur GitHub, se connecter en `admin` puis modifier ou supprimer les données. La solution déjà vue dans l'atelier, ce sont les **secrets** GitHub (séquence 3) : on y range les informations sensibles au lieu de les écrire dans le code. Ici, on pourrait faire pareil avec des variables d'environnement, et hacher les mots de passe.
 
 ---
 

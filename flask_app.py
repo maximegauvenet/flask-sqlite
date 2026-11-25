@@ -37,8 +37,22 @@ def est_authentifie():
     return session.get('authentifie')
 
 
+def a_le_role(*roles):
+    """Renvoie True si l'utilisateur connecté a l'un des rôles indiqués."""
+    return session.get('role') in roles
+
+
+# Comptes de démonstration (à remplacer par une table en base : voir le défi)
+COMPTES = {
+    'admin': {'mot_de_passe': 'password', 'role': 'admin'},
+    'user': {'mot_de_passe': '12345', 'role': 'user'},
+}
+
+
 @app.route('/recherche')
 def recherche():
+    if not a_le_role('user', 'admin'):
+        return redirect(url_for('authentification'))
     q = request.args.get('q', '').strip()
     data = []
     if q:
@@ -71,8 +85,11 @@ def lecture():
 def authentification():
     if request.method == 'POST':
         # Vérifier les identifiants
-        if request.form['username'] == 'admin' and request.form['password'] == 'password':  # password à cacher par la suite
+        compte = COMPTES.get(request.form['username'])
+        if compte and request.form['password'] == compte['mot_de_passe']:  # mots de passe à cacher par la suite
             session['authentifie'] = True
+            session['utilisateur'] = request.form['username']
+            session['role'] = compte['role']
             # Rediriger vers la route lecture après une authentification réussie
             return redirect(url_for('lecture'))
         else:
@@ -82,8 +99,16 @@ def authentification():
     return render_template('formulaire_authentification.html', error=False)
 
 
+@app.route('/deconnexion')
+def deconnexion():
+    session.clear()
+    return redirect('/')
+
+
 @app.route('/fiche_nom/<nom>')
 def fiche_nom(nom):
+    if not a_le_role('user', 'admin'):
+        return redirect(url_for('authentification'))
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM clients WHERE nom = ?', (nom,))
@@ -94,6 +119,8 @@ def fiche_nom(nom):
 
 @app.route('/fiche_client/<int:post_id>')
 def Readfiche(post_id):
+    if not a_le_role('user', 'admin'):
+        return redirect(url_for('authentification'))
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM clients WHERE id = ?', (post_id,))
@@ -108,6 +135,8 @@ def Readfiche(post_id):
 
 @app.route('/consultation/')
 def ReadBDD():
+    if not a_le_role('user', 'admin'):
+        return redirect(url_for('authentification'))
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM clients ORDER BY nom;')
@@ -118,11 +147,15 @@ def ReadBDD():
 
 @app.route('/enregistrer_client', methods=['GET'])
 def formulaire_client():
+    if not a_le_role('admin'):
+        return "<h2>Accès refusé : réservé aux administrateurs</h2>", 403
     return render_template('formulaire.html')  # afficher le formulaire
 
 
 @app.route('/enregistrer_client', methods=['POST'])
 def enregistrer_client():
+    if not a_le_role('admin'):
+        return "<h2>Accès refusé : réservé aux administrateurs</h2>", 403
     nom = request.form.get('nom', '').strip().upper()
     prenom = request.form.get('prenom', '').strip()
     adresse = request.form.get('adresse', '').strip()
@@ -151,6 +184,8 @@ def enregistrer_client():
 
 @app.route('/supprimer_client/<int:id>', methods=['POST'])
 def supprimer_client(id):
+    if not a_le_role('admin'):
+        return "<h2>Accès refusé : réservé aux administrateurs</h2>", 403
     conn = get_db()
     try:
         conn.execute('DELETE FROM clients WHERE id = ?', (id,))
@@ -164,6 +199,8 @@ def supprimer_client(id):
 
 @app.route('/modifier_client/<int:id>', methods=['GET', 'POST'])
 def modifier_client(id):
+    if not a_le_role('admin'):
+        return "<h2>Accès refusé : réservé aux administrateurs</h2>", 403
     conn = get_db()
     cursor = conn.cursor()
 
@@ -197,6 +234,8 @@ def modifier_client(id):
 
 @app.route('/commandes/')
 def liste_commandes():
+    if not a_le_role('user', 'admin'):
+        return redirect(url_for('authentification'))
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute('''SELECT commandes.id, clients.id AS client_id, clients.nom, clients.prenom,
@@ -211,6 +250,8 @@ def liste_commandes():
 
 @app.route('/statistiques/')
 def statistiques():
+    if not a_le_role('user', 'admin'):
+        return redirect(url_for('authentification'))
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute('''SELECT clients.id, clients.nom, clients.prenom,

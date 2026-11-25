@@ -23,7 +23,9 @@
             <th>Prénom</th>
             <th>Adresse</th>
             <th>Téléphone</th>
+            {% if session['role'] == 'admin' %}
             <th>Actions</th>
+            {% endif %}
         </tr>
         {% for row in data %}
         <tr>
@@ -33,6 +35,7 @@
             <td>{{ row['prenom'] }}</td>
             <td>{{ row['adresse'] }}</td>
             <td>{{ row['telephone'] or '-' }}</td>
+            {% if session['role'] == 'admin' %}
             <td>
                 <a href="/modifier_client/{{ row['id'] }}">✏️ Modifier</a>
                 <form action="/supprimer_client/{{ row['id'] }}" method="post" style="display: inline;"
@@ -40,6 +43,7 @@
                     <button type="submit">🗑️ Supprimer</button>
                 </form>
             </td>
+            {% endif %}
         </tr>
         {% endfor %}
     </table>
